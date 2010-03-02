@@ -1,0 +1,3 @@
+class ApplicantsController{
+def scaffold = Applicants;
+}

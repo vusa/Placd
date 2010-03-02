@@ -1,0 +1,3 @@
+class RecruitersController{
+def scaffold = Recruiters
+}
