@@ -1,6 +1,6 @@
 dataSource {
 	pooled = true
-	driverClassName = "org.hsqldb.jdbcDriver"
+	driverClassName = "org.postgresql.Driver"
 	username = "sa"
 	password = ""
 }
@@ -14,7 +14,9 @@ environments {
 	development {
 		dataSource {
 			dbCreate = "create-drop" // one of 'create', 'create-drop','update'
-			url = "jdbc:hsqldb:mem:devDB"
+			url = "jdbc:postgresql://127.0.0.1:5432/placd"
+			username = "postgres"
+			password = "postgres"
 		}
 	}
 	test {

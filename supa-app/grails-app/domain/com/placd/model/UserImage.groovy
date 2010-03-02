@@ -1,7 +1,7 @@
 package com.placd.model
 
 class UserImage {
-    User user;
+    AppUser user;
     String path;
     static constraints = {
     }

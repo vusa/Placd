@@ -1,7 +1,7 @@
 package com.placd.model
 
 class Reference {
-    User user;
+    Applicant applicant;
     String name;
     String position;
     String company;

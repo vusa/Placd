@@ -1,7 +1,7 @@
 package com.placd.model;
 
 class Experience {
-    User user;
+    Applicant applicant;
     String text;
     Date dateStart;
     Date dateEnd;

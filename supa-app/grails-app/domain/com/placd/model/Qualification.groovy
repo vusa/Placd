@@ -1,7 +1,7 @@
 package com.placd.model;
 
 class Qualification {
-    User  user;
+    Applicant  applicant;
     String text;
     int rank;
     String toString(){

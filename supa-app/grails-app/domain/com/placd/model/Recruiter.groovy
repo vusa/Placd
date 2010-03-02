@@ -2,7 +2,7 @@ package com.placd.model
 
 class Recruiter{
     int id;
-    User user;
+    AppUser user;
     String name
     String surname
     Company company;

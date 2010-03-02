@@ -1,7 +1,7 @@
 package com.placd.model;
 
 class KeySkills {
-    User  user;
+    Applicant applicant;
     String text;
     int level;
     static constraints = {

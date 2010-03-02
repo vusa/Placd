@@ -1,7 +1,7 @@
 package com.placd.model
 
 class PersonalDetails{
-    User user;
+    AppUser user;
     String cellphone;
     String workphone;
     String homephone;

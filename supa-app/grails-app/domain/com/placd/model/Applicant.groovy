@@ -2,7 +2,7 @@ package com.placd.model
 
 class Applicant{
     int id;
-    User user;
+    AppUser user;
     String name;
     String surname;
     String summary;

@@ -1,3 +1,0 @@
-class GroupController{
-def scaffold = Group;
-}

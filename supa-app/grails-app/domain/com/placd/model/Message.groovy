@@ -2,8 +2,8 @@ package com.placd.model
 
 class Message{
     int id
-    User toUser;
-    User fromUser;
+    AppUser toUser;
+    AppUser fromUser;
     String subject;
     Message inReplyTo;
     Job job;
