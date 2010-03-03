@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Welcome to Grails</title>
+        <title>Welcome to Placd</title>
 		<meta name="layout" content="main" />
 		<style type="text/css" media="screen">
 
