@@ -2,70 +2,18 @@
 <html>
     <head>
         <meta name='gwt:module' content='za.co.placd.ui=za.co.placd.ui'>
-        <title>ui</title>
+        <title>Placd</title>
     </head>
     <body>
         <script type="text/javascript"  src="jobsapp/jobsapp.nocache.js"></script>
         <h1>Jobs Site</h1>
-    <table align="center">
-      <tr>
-        <td colspan="2" style="font-weight:bold;">Please post new job</td>
-      </tr>
-      <tr>
-        <td>
-
-            <table border="1" cellpadding="2">
-          <thead>
-              <tr>
-                  <th></th>
-                  <th></th>
-              </tr>
-          </thead>
-          <tbody>
-              <tr>
-                  <td>Job Id</td>
-                  <td id="jobidContainer"></td>
-              </tr>
-              <tr>
-                  <td>Position</td>
-                  <td id="jobtitleContainer"></td>
-              </tr>
-              <tr>
-                  <td>Summary</td>
-                  <td id="jobsummaryContainer"></td>
-              </tr>
-              <tr>
-                  <td>Full Description</td>
-                  <td id="jobdescriptionContainer"></td>
-              </tr>
-              <tr>
-                  <td>Pay rate</td>
-                  <td id="jobpayContainer"></td>
-              </tr>
-              <tr>
-                  <td>Closing date</td>
-                  <td id="jobclosingdateContainer"></td>
-              </tr>
-              <tr>
-                  <td>Click to save -&gt;</td>
-                  <td id="jobsaveContainer"></td>
-              </tr>
-          </tbody>
-      </table>
-
-        </td>
-      </tr>
-
-      <tr>
-        <td colspan="2" style="font-weight:bold;">Listed Jobs</td>
-        <td colspan="2" id="jobRetrieverBtnContainer"></td>
-      </tr>
-      <tr>
-        <td id="jobsListContainer"></td>
-      </tr>
-      <tr>
-        <td colspan="2" style="color:red;" id="errorLabelContainer"></td>
-      </tr>
-    </table>
+        <table align="center">
+            <tr>
+                <td id="mainappContainer"></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="color:red;" id="errorLabelContainer"></td>
+            </tr>
+        </table>
     </body>
 </html>

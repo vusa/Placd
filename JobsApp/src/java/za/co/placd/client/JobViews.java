@@ -8,13 +8,15 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import java.util.Date;
 import java.util.List;
@@ -26,8 +28,17 @@ import za.co.placd.shared.dto.JobsDTO;
  */
 public class JobViews extends AbstractWidgetsMaker {
 
-    public void makeJobsWidgets() {
-
+    public Widget makeJobsWidgets() {
+        VerticalPanel vp = new VerticalPanel();
+        FlexTable layout = new FlexTable();
+        layout.setWidget(1, 0, new Label("id"));
+        layout.setWidget(2, 0, new Label("Position"));
+        layout.setWidget(3, 0, new Label("Summary"));
+        layout.setWidget(4, 0, new Label("Full description"));
+        layout.setWidget(5, 0, new Label("Pay Rate"));
+        layout.setWidget(6, 0, new Label("Closing Date"));
+        layout.setWidget(0, 0, new Label("Enter new position"));
+        final Label jobIdLbl = new Label();
         final Button saveOrUpdateButton = new Button("SaveOrUpdate");
         final Button retrieveButton = new Button("Retrieve");
         final TextBox jobTitleBox = new TextBox();
@@ -44,17 +55,27 @@ public class JobViews extends AbstractWidgetsMaker {
         // We can add style names to widgets
         saveOrUpdateButton.addStyleName("sendButton");
         retrieveButton.addStyleName("sendButton");
-        // Add the nameField and sendButton to the RootPanel
-        // Use RootPanel.get() to get the entire body element
-        RootPanel.get("jobtitleContainer").add(jobTitleBox);
-        RootPanel.get("jobsummaryContainer").add(jobSummaryArea);
-        RootPanel.get("jobdescriptionContainer").add(jobDescriptionArea);
-        RootPanel.get("jobpayContainer").add(jobSalaryBox);
-        RootPanel.get("jobpayContainer").add(payPeriodsBox);
-        RootPanel.get("jobclosingdateContainer").add(closingDateBox);
-        RootPanel.get("jobsaveContainer").add(saveOrUpdateButton);
-        RootPanel.get("jobRetrieverBtnContainer").add(retrieveButton);
-        RootPanel.get("errorLabelContainer").add(errorLabel);
+
+        // Add widgets to flextable
+        layout.setWidget(1, 1, jobIdLbl);
+        layout.setWidget(2, 1, jobTitleBox);
+        layout.setWidget(3, 1, jobSummaryArea);
+        layout.setWidget(4, 1, jobDescriptionArea);
+        HorizontalPanel salaryBox = new HorizontalPanel();
+        salaryBox.add(jobSalaryBox);
+        salaryBox.add(payPeriodsBox);
+        layout.setWidget(5, 1, salaryBox);
+        layout.setWidget(6, 1, closingDateBox);
+        layout.setWidget(7, 0, saveOrUpdateButton);
+        vp.add(layout);
+        //show jobs button.
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add(new HTML("Listed Jobs"));
+        hp.add(retrieveButton);
+        vp.add(hp);
+        final VerticalPanel joblistVP = new VerticalPanel();
+        vp.add(joblistVP);
+        vp.add(errorLabel);
         // Focus the cursor on the name field when the app loads
         jobTitleBox.setFocus(true);
         // Create the popup dialog box
@@ -98,13 +119,23 @@ public class JobViews extends AbstractWidgetsMaker {
             private void sendJobInfoToServer() {
                 errorLabel.setText("");
                 JobsDTO dto = new JobsDTO();
+                try {
+                    dto.setId(new Long(jobIdLbl.getText()));
+                } catch (NumberFormatException nfe) {
+                    dto.setId(null);
+                }
                 dto.setTitle(jobTitleBox.getText());
-                dto.setDatePosted(new Date());
-                dto.setDateClosing(closingDateBox.getValue());
-                dto.setDescription(jobDescriptionArea.getText());
-                dto.setPayPeriod(payPeriodsBox.getItemText(payPeriodsBox.getSelectedIndex()));
-                dto.setPayRate(new Integer(jobSalaryBox.getValue()));
                 dto.setSummary(jobSummaryArea.getText());
+                dto.setDescription(jobDescriptionArea.getText());
+                try {
+                    dto.setPayRate(new Integer(jobSalaryBox.getValue()));
+                } catch (NumberFormatException nfe) {
+                    dto.setPayRate(null);
+                }
+                dto.setPayPeriod(payPeriodsBox.getItemText(payPeriodsBox.getSelectedIndex()));
+                dto.setDateClosing(closingDateBox.getValue());
+                dto.setDatePosted(new Date());
+
                 // Then, we send the input to the server.
                 saveOrUpdateButton.setEnabled(false);
                 textToServerLabel.setText(dto.getSummary());
@@ -126,6 +157,14 @@ public class JobViews extends AbstractWidgetsMaker {
                         serverResponseLabel.setHTML("OK");
                         dialogBox.center();
                         closeButton.setFocus(true);
+                        //clear joedit widgets
+                        jobIdLbl.setText("");
+                        jobTitleBox.setText("");
+                        jobSummaryArea.setText("");
+                        jobDescriptionArea.setText("");
+                        jobSalaryBox.setText("");
+                        payPeriodsBox.setSelectedIndex(0);
+                        closingDateBox.setValue(new Date());
                     }
                 });
             }
@@ -160,8 +199,8 @@ public class JobViews extends AbstractWidgetsMaker {
                         for (JobsDTO dto : result) {
                             jobListHTML += "<p><b>" + dto.getId() + "</b>&nbsp;" + dto.getTitle() + "<br />" + dto.getSummary() + "<p>";
                         }
-                        RootPanel.get("jobsListContainer").clear();
-                        RootPanel.get("jobsListContainer").add(new HTML(jobListHTML));
+                        joblistVP.clear();
+                        joblistVP.add(new HTML(jobListHTML));
                     }
                 });
             }
@@ -173,5 +212,6 @@ public class JobViews extends AbstractWidgetsMaker {
         // Add a handler to get jobs list from server
         RetrieveJobsHandler retrieveJobshandler = new RetrieveJobsHandler();
         retrieveButton.addClickHandler(retrieveJobshandler);
+        return vp;
     }
 }
