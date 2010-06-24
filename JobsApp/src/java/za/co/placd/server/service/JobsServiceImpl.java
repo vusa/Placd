@@ -30,7 +30,7 @@ public class JobsServiceImpl extends JpaDAO<Long, Jobs> implements JobsService {
     }
 
     public List<JobsDTO> listJobs() {
-        List<Jobs> jobs = findAll();
+        List<Jobs> jobs = findAllOrderedById();
         List<JobsDTO> dtos = new ArrayList<JobsDTO>();
         for (Jobs job : jobs) {
             JobsDTO dto = new JobsDTO();

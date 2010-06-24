@@ -56,6 +56,19 @@ public abstract class JpaDAO<K, E> extends JpaDaoSupport {
         return (List<E>) res;
     }
 
+        @SuppressWarnings("unchecked")
+    public List<E> findAllOrderedById() {
+        Object res = getJpaTemplate().execute(new JpaCallback() {
+
+            public Object doInJpa(EntityManager em) throws PersistenceException {
+                Query q = em.createQuery("SELECT h FROM "
+                        + entityClass.getName() + " h ORDER BY h.id DESC");
+                return q.getResultList();
+            }
+        });
+        return (List<E>) res;
+    }
+
     @SuppressWarnings("unchecked")
     public Integer removeAll() {
         return (Integer) getJpaTemplate().execute(new JpaCallback() {

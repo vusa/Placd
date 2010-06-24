@@ -5,12 +5,16 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
@@ -195,16 +199,45 @@ public class JobViews extends AbstractWidgetsMaker {
                     }
 
                     public void onSuccess(List<JobsDTO> result) {
-                        String jobListHTML = "";
-                        for (JobsDTO dto : result) {
-                            jobListHTML += "<p><b>" + dto.getId() + "</b>&nbsp;" + dto.getTitle() + "<br />" + dto.getSummary() + "<p>";
-                        }
                         joblistVP.clear();
-                        joblistVP.add(new HTML(jobListHTML));
+                        for (JobsDTO dto : result) {
+                            HorizontalPanel jobListHP = new HorizontalPanel();
+                            String jobListHTML = "<b>" + dto.getId() + "</b>&nbsp;" + dto.getTitle() + "<br />" + dto.getSummary() + "&nbsp;";
+                            jobListHP.add(new HTML(jobListHTML));
+                            jobListHP.add(new Hyperlink("Edit", dto.getId().toString()));
+                            joblistVP.add(jobListHP);
+                            joblistVP.add(new HTML("&nbsp;"));
+                        }
+                        History.addValueChangeHandler(new EditJobHandler());
                     }
                 });
             }
+            //Handler for editing job
+
+            class EditJobHandler implements ValueChangeHandler<String> {
+
+                public void onValueChange(ValueChangeEvent<String> vce) {
+                    jobsService.getJob(new Long(vce.getValue()), new AsyncCallback<JobsDTO>() {
+
+                        public void onFailure(Throwable thrwbl) {
+                        }
+
+                        public void onSuccess(JobsDTO dto) {
+                            jobIdLbl.setText(dto.getId().toString());
+                            jobTitleBox.setText(dto.getTitle());
+                            jobSummaryArea.setText(dto.getSummary());
+                            jobDescriptionArea.setText(dto.getDescription());
+                            jobSalaryBox.setText(dto.getPayRate().toString());
+                            payPeriodsBox.setTitle(dto.getPayPeriod());
+                            closingDateBox.setValue(dto.getDateClosing());
+                            jobTitleBox.setFocus(true);
+                        }
+                    });
+                }
+            }
         }
+
+
         // Add a handler to send the job to the server
         SaveOrUpdateJobHandler saveOrUpdateJobhandler = new SaveOrUpdateJobHandler();
         saveOrUpdateButton.addClickHandler(saveOrUpdateJobhandler);
