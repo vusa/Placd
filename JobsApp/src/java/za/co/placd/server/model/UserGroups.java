@@ -5,17 +5,22 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="user_groups")
+@NamedQueries({@NamedQuery(name="UserGroups.byLogin", query="SELECT DISTINCT u.userGroup FROM UserGroups u WHERE u.appUser.login = :login")})
 public class UserGroups implements Serializable{
     @Id
     private Long id;
-    @ManyToOne()
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "login")
     private AppUsers appUser;
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private Groups userGroup;
 
     public Long getId() {
@@ -53,5 +58,4 @@ public class UserGroups implements Serializable{
     public void setUserGroup(Groups userGroup) {
         this.userGroup = userGroup;
     }
-    
 }

@@ -1,42 +1,16 @@
-package za.co.placd.server.model;
+package za.co.placd.shared.dto;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.TableGenerator;
-import javax.persistence.Temporal;
 
-@Entity
-@Table(name = "app_users")
-@NamedQueries({
-    @NamedQuery(name = "AppUsers.byLoginAndPassword", query = "SELECT a FROM AppUsers a WHERE a.login=:login AND a.password=:password")
-})
-public class AppUsers implements Serializable {
+public class AppUsersDTO implements Serializable {
 
-    @Id
-    @TableGenerator(name = "AppUsersTab", table = "id_gen",
-    pkColumnName = "id_name", valueColumnName = "id_val",
-    pkColumnValue = "appuser", allocationSize = 5)
-    @GeneratedValue(generator = "AppUsersTab", strategy = GenerationType.TABLE)
     private Long id;
     private String login;
     private String email;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "auth_type")
-    private AuthType authType;
+    private String authType;
     private String password;
-    @Temporal(value = javax.persistence.TemporalType.TIMESTAMP)
     private Date dob;
-    @Temporal(value = javax.persistence.TemporalType.TIMESTAMP)
     private Date lastLogin;
     private boolean active;
 
@@ -79,14 +53,14 @@ public class AppUsers implements Serializable {
     /**
      * @return the authType
      */
-    public AuthType getAuthType() {
+    public String getAuthType() {
         return authType;
     }
 
     /**
      * @param authType the authType to set
      */
-    public void setAuthType(AuthType authType) {
+    public void setAuthType(String authType) {
         this.authType = authType;
     }
 
@@ -145,4 +119,5 @@ public class AppUsers implements Serializable {
     public void setActive(boolean active) {
         this.active = active;
     }
+
 }

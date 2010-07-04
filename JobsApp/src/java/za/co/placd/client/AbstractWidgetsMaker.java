@@ -10,9 +10,9 @@ import za.co.placd.shared.services.JobsServiceAsync;
  * @author vusa
  */
 public abstract class AbstractWidgetsMaker {
-    MainCWConstants maincwConstants = (MainCWConstants) GWT.create(MainCWConstants.class);
-    final JobsServiceAsync jobsService = GWT.create(JobsService.class);
-    static final String SERVER_ERROR = "An error occurred while "
+    public MainCWConstants maincwConstants = (MainCWConstants) GWT.create(MainCWConstants.class);
+    public final JobsServiceAsync jobsService = GWT.create(JobsService.class);
+    public static final String SERVER_ERROR = "An error occurred while "
             + "attempting to contact the server. Please check your network "
             + "connection and try again. The error is : ";
 }

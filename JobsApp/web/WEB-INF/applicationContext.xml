@@ -1,28 +1,44 @@
+
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="
             http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
             http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
             http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
-            http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
-	<context:component-scan base-package="za.co.placd.server" />
-	<task:annotation-driven executor="myExecutor"
+            http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+            http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+    <context:component-scan base-package="za.co.placd.server" />
+    <task:annotation-driven executor="myExecutor"
 		scheduler="myScheduler" />
-	<task:executor id="myExecutor" pool-size="5" />
-	<task:scheduler id="myScheduler" pool-size="10" />
-	<tx:annotation-driven />
-	<bean class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean"
+    <task:executor id="myExecutor" pool-size="5" />
+    <task:scheduler id="myScheduler" pool-size="10" />
+    <tx:annotation-driven />
+    <bean class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean"
 		id="entityManagerFactory">
-		<property name="persistenceUnitName" value="JobsAppPU" />
-	</bean>
-	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
+        <property name="persistenceUnitName" value="JobsAppPU" />
+    </bean>
+    <bean class="org.springframework.orm.jpa.JpaTransactionManager"
 		id="transactionManager">
-		<property name="entityManagerFactory" ref="entityManagerFactory" />
-	</bean>
-        <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+    <!-- Spring Security integration -->
+    <security:http auto-config='true' create-session="always">
+        <security:intercept-url pattern="/admin.html" access="ROLE_ADMIN" />
+        <security:form-login />
+    </security:http>
+    <security:authentication-manager>
+        <!--<security:authentication-provider>
+            <security:user-service>
+                <security:user name="thandi" password="pass" authorities="ROLE_USER, ROLE_ADMIN" />
+                <security:user name="thoko" password="pass" authorities="ROLE_USER" />
+            </security:user-service>
+        </security:authentication-provider>-->
+        <security:authentication-provider ref='authProvider'/>
+    </security:authentication-manager>
 </beans>

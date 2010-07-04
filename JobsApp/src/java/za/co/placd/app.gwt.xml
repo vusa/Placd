@@ -2,7 +2,7 @@
 
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.7.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/1.7.0/distro-source/core/src/gwt-module.dtd">
 
-<module rename-to="jobsapp">
+<module rename-to="app">
     <inherits name="com.google.gwt.user.User"/>
     
     <!-- Inherit the default GWT style sheet. You can change -->
@@ -12,8 +12,7 @@
     <!-- <inherits name="com.google.gwt.user.theme.chrome.Chrome"/> -->
     <!-- <inherits name="com.google.gwt.user.theme.dark.Dark"/> -->
 
-    <entry-point class="za.co.placd.client.uiEntryPoint"/>
-    
+    <entry-point class="za.co.placd.client.app.AppEntryPoint"/>
     <source path='client'/>
     <source path='shared'/>
     <!-- Do not define servlets here, use web.xml -->
