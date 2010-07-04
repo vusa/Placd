@@ -1,7 +1,9 @@
 package za.co.placd.shared.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class AppUsersDTO implements Serializable {
 
@@ -13,6 +15,7 @@ public class AppUsersDTO implements Serializable {
     private Date dob;
     private Date lastLogin;
     private boolean active;
+    private List<String> roles = new ArrayList<String>();
 
     public Long getId() {
         return id;
@@ -118,6 +121,20 @@ public class AppUsersDTO implements Serializable {
      */
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    /**
+     * @return the roles
+     */
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    /**
+     * @param roles the roles to set
+     */
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
 }

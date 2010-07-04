@@ -17,7 +17,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -26,6 +25,7 @@ import com.google.gwt.user.datepicker.client.DateBox;
 import java.util.Date;
 import java.util.List;
 import za.co.placd.client.AbstractWidgetsMaker;
+import za.co.placd.shared.dto.AppUsersDTO;
 import za.co.placd.shared.dto.JobsDTO;
 
 /**
@@ -34,8 +34,11 @@ import za.co.placd.shared.dto.JobsDTO;
  */
 public class JobViews extends AbstractWidgetsMaker {
 
+    public JobViews(AppUsersDTO user) {
+        super(user);
+    }
+
     public Widget makeJobsWidgets() {
-        RootPanel.get("loginTextContainer").add(new HTML("<a href=\"spring_security_login\">Login</a>"));
         VerticalPanel vp = new VerticalPanel();
         FlexTable layout = new FlexTable();
         layout.setWidget(1, 0, new Label("id"));
@@ -239,7 +242,6 @@ public class JobViews extends AbstractWidgetsMaker {
                 }
             }
         }
-
 
         // Add a handler to send the job to the server
         SaveOrUpdateJobHandler saveOrUpdateJobhandler = new SaveOrUpdateJobHandler();

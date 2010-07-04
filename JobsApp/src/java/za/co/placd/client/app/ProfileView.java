@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import za.co.placd.client.AbstractWidgetsMaker;
+import za.co.placd.shared.dto.AppUsersDTO;
 import za.co.placd.shared.services.AuthService;
 import za.co.placd.shared.services.AuthServiceAsync;
 
@@ -27,6 +28,10 @@ import za.co.placd.shared.services.AuthServiceAsync;
 public class ProfileView extends AbstractWidgetsMaker {
 
     final AuthServiceAsync authService = GWT.create(AuthService.class);
+
+    public ProfileView(AppUsersDTO user) {
+        super(user);
+    }
 
     public Widget makeProfileView() {
         final VerticalPanel vp = new VerticalPanel();
@@ -67,7 +72,7 @@ public class ProfileView extends AbstractWidgetsMaker {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
 
-                    public void onSuccess(Boolean t) {
+                    public void onSuccess(final Boolean t) {
                         final DialogBox dialogBox = new DialogBox();
                         dialogBox.setHTML("Logging in...");
                         dialogBox.setAnimationEnabled(true);
@@ -81,12 +86,16 @@ public class ProfileView extends AbstractWidgetsMaker {
                         closeButton.addClickHandler(new ClickHandler() {
 
                             public void onClick(ClickEvent ce) {
-                                Window.Location.reload();
+                                if (t) {
+                                    Window.Location.reload();
+                                } else {
+                                    dialogBox.hide();
+                                }
                             }
                         });
                         dbvp.add(closeButton);
                         dialogBox.add(dbvp);
-                        dialogBox.center();
+                        dialogBox.show();
                     }
                 });
             }

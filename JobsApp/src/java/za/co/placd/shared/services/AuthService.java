@@ -3,6 +3,7 @@ package za.co.placd.shared.services;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import java.util.List;
+import org.springframework.security.core.userdetails.User;
 import za.co.placd.shared.dto.AppUsersDTO;
 import za.co.placd.shared.dto.GroupsDTO;
 
@@ -19,7 +20,7 @@ public interface AuthService extends RemoteService {
 
     public AppUsersDTO getUser(String username, String password);
 
-    public AppUsersDTO getUser(String username);
+    public AppUsersDTO getUser();
 
     public boolean currentUserHasAuthority(String role);
 

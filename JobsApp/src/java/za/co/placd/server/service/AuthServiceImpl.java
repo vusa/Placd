@@ -2,7 +2,6 @@ package za.co.placd.server.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -41,6 +40,7 @@ public class AuthServiceImpl extends JpaDAO<Long, AppUsers> implements AuthServi
 
     @Autowired
     EntityManagerFactory entityManagerFactory;
+    private AppUsersDTO userDTO;
 
     @PostConstruct
     public void init() {
@@ -48,7 +48,6 @@ public class AuthServiceImpl extends JpaDAO<Long, AppUsers> implements AuthServi
     }
 
     public boolean authenticate(String username, String password) {
-        AppUsersDTO userDTO = null;
         try {
             userDTO = getUser(username, password);
         } catch (Exception e) {
@@ -58,8 +57,8 @@ public class AuthServiceImpl extends JpaDAO<Long, AppUsers> implements AuthServi
 
         if (authenticated) {
             List<GrantedAuthority> authorities = getGrantedAuthorities(username);
-            User user = new User(username, password, userDTO.isActive(), userDTO.isActive(), userDTO.isActive(), userDTO.isActive(), authorities);
-            Authentication auth = new UsernamePasswordAuthenticationToken(user, password, authorities);
+            User user = new User(username, username, userDTO.isActive(), userDTO.isActive(), userDTO.isActive(), userDTO.isActive(), authorities);
+            Authentication auth = new UsernamePasswordAuthenticationToken(user, username, authorities);
             SecurityContext sc = new SecurityContextImpl();
             sc.setAuthentication(auth);
             SecurityContextHolder.setContext(sc);
@@ -96,7 +95,6 @@ public class AuthServiceImpl extends JpaDAO<Long, AppUsers> implements AuthServi
             dto.setId(user.getId());
             dto.setLastLogin(new Date());
             dto.setLogin(username);
-            dto.setPassword(password);
         }
         return dto;
     }
@@ -132,6 +130,7 @@ public class AuthServiceImpl extends JpaDAO<Long, AppUsers> implements AuthServi
         List<GrantedAuthority> ga = new ArrayList<GrantedAuthority>();
         for (GroupsDTO g : getUserGroups(username)) {
             ga.add(new GrantedAuthorityImpl(g.getName()));
+            userDTO.getRoles().add(g.getName());
         }
         return ga;
     }
@@ -153,8 +152,8 @@ public class AuthServiceImpl extends JpaDAO<Long, AppUsers> implements AuthServi
         return dtos;
     }
 
-    public AppUsersDTO getUser(String username) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public AppUsersDTO getUser() {
+        return userDTO;
     }
 
     /**

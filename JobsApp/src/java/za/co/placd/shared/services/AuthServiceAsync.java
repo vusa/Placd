@@ -2,7 +2,6 @@ package za.co.placd.shared.services;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.util.List;
-import org.springframework.security.core.userdetails.User;
 import za.co.placd.shared.dto.AppUsersDTO;
 import za.co.placd.shared.dto.GroupsDTO;
 
@@ -24,10 +23,10 @@ public interface AuthServiceAsync {
 
     public void deleteUser(Long userId, AsyncCallback<Void> asyncCallback);
 
-    public void getUser(String username, AsyncCallback<AppUsersDTO> asyncCallback);
-
     public void getUsername(AsyncCallback<String> asyncCallback);
 
     public void currentUserHasAuthority(String role, AsyncCallback<java.lang.Boolean> asyncCallback);
+
+    public void getUser(AsyncCallback<AppUsersDTO> asyncCallback);
 
 }

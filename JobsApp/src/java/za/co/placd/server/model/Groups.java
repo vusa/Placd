@@ -6,7 +6,7 @@ package za.co.placd.server.model;
  */
 public enum Groups {
     ROLE_ADMIN,
-    USER,
+    ROLE_USER,
     RECRUITER,
     APPLICANT
 }
