@@ -1,5 +1,6 @@
 package za.co.placd.client.app;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -8,9 +9,12 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -25,8 +29,11 @@ import com.google.gwt.user.datepicker.client.DateBox;
 import java.util.Date;
 import java.util.List;
 import za.co.placd.client.AbstractWidgetsMaker;
+import za.co.placd.shared.constants.Groups;
 import za.co.placd.shared.dto.AppUsersDTO;
 import za.co.placd.shared.dto.JobsDTO;
+import za.co.placd.shared.services.JobsService;
+import za.co.placd.shared.services.JobsServiceAsync;
 
 /**
  *
@@ -34,11 +41,15 @@ import za.co.placd.shared.dto.JobsDTO;
  */
 public class JobViews extends AbstractWidgetsMaker {
 
+    public final JobsServiceAsync jobsService = GWT.create(JobsService.class);
+
     public JobViews(AppUsersDTO user) {
         super(user);
     }
 
     public Widget makeJobsWidgets() {
+        final boolean userIsRecruiter = userHasRole(Groups.ROLE_RECRUITER);
+        final boolean userIsAdmin = userHasRole(Groups.ROLE_ADMIN);
         VerticalPanel vp = new VerticalPanel();
         FlexTable layout = new FlexTable();
         layout.setWidget(1, 0, new Label("id"));
@@ -50,7 +61,6 @@ public class JobViews extends AbstractWidgetsMaker {
         layout.setWidget(0, 0, new Label("Enter new position"));
         final Label jobIdLbl = new Label();
         final Button saveOrUpdateButton = new Button("SaveOrUpdate");
-        final Button retrieveButton = new Button("Retrieve");
         final TextBox jobTitleBox = new TextBox();
         final TextArea jobSummaryArea = new TextArea();
         final TextArea jobDescriptionArea = new TextArea();
@@ -62,32 +72,49 @@ public class JobViews extends AbstractWidgetsMaker {
         }
         final DateBox closingDateBox = new DateBox();
         final Label errorLabel = new Label();
-        // We can add style names to widgets
-        saveOrUpdateButton.addStyleName("sendButton");
-        retrieveButton.addStyleName("sendButton");
 
-        // Add widgets to flextable
-        layout.setWidget(1, 1, jobIdLbl);
-        layout.setWidget(2, 1, jobTitleBox);
-        layout.setWidget(3, 1, jobSummaryArea);
-        layout.setWidget(4, 1, jobDescriptionArea);
-        HorizontalPanel salaryBox = new HorizontalPanel();
-        salaryBox.add(jobSalaryBox);
-        salaryBox.add(payPeriodsBox);
-        layout.setWidget(5, 1, salaryBox);
-        layout.setWidget(6, 1, closingDateBox);
-        layout.setWidget(7, 0, saveOrUpdateButton);
-        vp.add(layout);
-        //show jobs button.
+        //only recruiters need to add jobs
+        //admins can edit existing jobs
+        final DisclosurePanel jobEditdp = new DisclosurePanel();
+        jobEditdp.setAnimationEnabled(true);
+        if (userIsRecruiter || userIsAdmin) {
+            saveOrUpdateButton.addStyleName("sendButton");
+            // Add widgets to flextable
+            layout.setWidget(1, 1, jobIdLbl);
+            layout.setWidget(2, 1, jobTitleBox);
+            layout.setWidget(3, 1, jobSummaryArea);
+            layout.setWidget(4, 1, jobDescriptionArea);
+            HorizontalPanel salaryBox = new HorizontalPanel();
+            salaryBox.add(jobSalaryBox);
+            salaryBox.add(payPeriodsBox);
+            layout.setWidget(5, 1, salaryBox);
+            layout.setWidget(6, 1, closingDateBox);
+            layout.setWidget(7, 0, saveOrUpdateButton);
+            jobEditdp.add(layout);
+            if (userIsRecruiter) {
+                jobEditdp.setHeader(new HTML(maincwConstants.jobsEditDisclosurePanelTitle()));
+            }
+            vp.add(jobEditdp);
+            // Focus the cursor on the name field when the app loads
+            jobTitleBox.setFocus(true);
+
+        }
+        vp.add(errorLabel);
+
+        //show list jobs button.
+        final Button retrieveButton = new Button("Retrieve");
+        retrieveButton.addStyleName("sendButton");
+        final CheckBox showRecruiterOnlyJobsChk = new CheckBox("Only show jobs I posted");
         HorizontalPanel hp = new HorizontalPanel();
         hp.add(new HTML("Listed Jobs"));
         hp.add(retrieveButton);
+        if (userIsRecruiter) {
+            showRecruiterOnlyJobsChk.setValue(true);
+            hp.add(showRecruiterOnlyJobsChk);
+        }
         vp.add(hp);
         final VerticalPanel joblistVP = new VerticalPanel();
         vp.add(joblistVP);
-        vp.add(errorLabel);
-        // Focus the cursor on the name field when the app loads
-        jobTitleBox.setFocus(true);
         // Create the popup dialog box
         final DialogBox dialogBox = new DialogBox();
         dialogBox.setText("Remote Procedure Call");
@@ -175,13 +202,13 @@ public class JobViews extends AbstractWidgetsMaker {
                         jobSalaryBox.setText("");
                         payPeriodsBox.setSelectedIndex(0);
                         closingDateBox.setValue(new Date());
+                        jobEditdp.setOpen(false);
                     }
                 });
             }
         }
 
         // Create a handler for the retrieveButton
-
         class RetrieveJobsHandler implements ClickHandler, KeyUpHandler {
 
             public void onClick(ClickEvent event) {
@@ -198,34 +225,43 @@ public class JobViews extends AbstractWidgetsMaker {
                 errorLabel.setText("");
                 retrieveButton.setEnabled(false);
                 serverResponseLabel.setText("");
-                jobsService.listJobs(new AsyncCallback<List<JobsDTO>>() {
+                jobsService.listJobs(showRecruiterOnlyJobsChk.getValue(), new AsyncCallback<List<JobsDTO>>() {
 
                     public void onFailure(Throwable caught) {
-                        throw new UnsupportedOperationException("Not supported yet.");
+                        Window.alert("jobsService failed listJobs()");
                     }
 
                     public void onSuccess(List<JobsDTO> result) {
                         joblistVP.clear();
+                        boolean userCanEditAll = false;
+                        if (userIsAdmin) {
+                            userCanEditAll = true;
+                        }
                         for (JobsDTO dto : result) {
                             HorizontalPanel jobListHP = new HorizontalPanel();
                             String jobListHTML = "<b>" + dto.getId() + "</b>&nbsp;" + dto.getTitle() + "<br />" + dto.getSummary() + "&nbsp;";
                             jobListHP.add(new HTML(jobListHTML));
-                            jobListHP.add(new Hyperlink("Edit", dto.getId().toString()));
+                            if (userCanEditAll || (userIsRecruiter && user.getId().equals(dto.getPostedby()))) {
+                                jobListHP.add(new Hyperlink("Edit", dto.getId().toString()));
+                            }
                             joblistVP.add(jobListHP);
                             joblistVP.add(new HTML("&nbsp;"));
                         }
                         History.addValueChangeHandler(new EditJobHandler());
                     }
                 });
-            }
-            //Handler for editing job
 
+            }
+
+            //Handler for editing job
             class EditJobHandler implements ValueChangeHandler<String> {
 
                 public void onValueChange(ValueChangeEvent<String> vce) {
                     jobsService.getJob(new Long(vce.getValue()), new AsyncCallback<JobsDTO>() {
 
                         public void onFailure(Throwable thrwbl) {
+                            Window.alert("jobService failed getJob saying " + thrwbl.getMessage());
+                            jobEditdp.setOpen(false);
                         }
 
                         public void onSuccess(JobsDTO dto) {
@@ -236,20 +272,17 @@ public class JobViews extends AbstractWidgetsMaker {
                             jobSalaryBox.setText(dto.getPayRate().toString());
                             payPeriodsBox.setTitle(dto.getPayPeriod());
                             closingDateBox.setValue(dto.getDateClosing());
+                            jobEditdp.setOpen(true);
                             jobTitleBox.setFocus(true);
                         }
                     });
                 }
             }
         }
-
         // Add a handler to send the job to the server
-        SaveOrUpdateJobHandler saveOrUpdateJobhandler = new SaveOrUpdateJobHandler();
-        saveOrUpdateButton.addClickHandler(saveOrUpdateJobhandler);
-
+        saveOrUpdateButton.addClickHandler(new SaveOrUpdateJobHandler());
         // Add a handler to get jobs list from server
-        RetrieveJobsHandler retrieveJobshandler = new RetrieveJobsHandler();
-        retrieveButton.addClickHandler(retrieveJobshandler);
+        retrieveButton.addClickHandler(new RetrieveJobsHandler());
         return vp;
     }
 }

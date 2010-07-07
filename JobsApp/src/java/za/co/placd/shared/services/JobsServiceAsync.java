@@ -10,10 +10,10 @@ import za.co.placd.shared.dto.JobsDTO;
  */
 public interface JobsServiceAsync{
 
-    public void listJobs(AsyncCallback<List<JobsDTO>> asyncCallback);
-
     public void getJob(long id, AsyncCallback<JobsDTO> asyncCallback);
 
     public void createOrUpdateJob(JobsDTO dto, AsyncCallback<Void> asyncCallback);
+
+    public void listJobs(boolean forCurrentUser, AsyncCallback<List<JobsDTO>> asyncCallback);
 
 }

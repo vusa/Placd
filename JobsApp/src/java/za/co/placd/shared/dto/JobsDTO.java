@@ -17,6 +17,7 @@ public class JobsDTO implements Serializable {
     private Integer payRate;
     private String payPeriod;
     private Date dateClosing;
+    private Long postedby;
 
     public JobsDTO() {
     }
@@ -115,5 +116,19 @@ public class JobsDTO implements Serializable {
      */
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    /**
+     * @return the postedby
+     */
+    public Long getPostedby() {
+        return postedby;
+    }
+
+    /**
+     * @param postedby the postedby to set
+     */
+    public void setPostedby(Long postedby) {
+        this.postedby = postedby;
     }
 }

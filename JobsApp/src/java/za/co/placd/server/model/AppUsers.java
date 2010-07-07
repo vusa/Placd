@@ -40,6 +40,13 @@ public class AppUsers implements Serializable {
     private Date lastLogin;
     private boolean active;
 
+    public AppUsers() {
+    }
+
+    public AppUsers(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

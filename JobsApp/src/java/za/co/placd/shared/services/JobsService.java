@@ -12,7 +12,7 @@ import za.co.placd.shared.dto.JobsDTO;
 @RemoteServiceRelativePath("springGwtServices/jobsService")
 public interface JobsService extends RemoteService {
 
-    public List<JobsDTO> listJobs();
+    public List<JobsDTO> listJobs(boolean forCurrentUser);
 
     public JobsDTO getJob(long id);
 

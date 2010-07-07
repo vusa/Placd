@@ -2,6 +2,7 @@ package za.co.placd.server.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,7 +26,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import za.co.placd.server.model.AppUsers;
 import za.co.placd.server.model.AuthType;
-import za.co.placd.server.model.Groups;
+import za.co.placd.shared.constants.Groups;
 import za.co.placd.server.util.MD5;
 import za.co.placd.shared.dto.AppUsersDTO;
 import za.co.placd.shared.dto.GroupsDTO;

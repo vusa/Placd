@@ -6,9 +6,11 @@ import com.google.gwt.i18n.client.Constants;
  *
  * @author vusa
  */
-public interface MainCWConstants extends Constants{
+public interface MainCWConstants extends Constants {
 
     @DefaultStringArrayValue({"HOURLY", "MONTHLY", "ANNUALLY", "ONCEOFF"})
-    String [] payPeriods();
+    String[] payPeriods();
 
+    @DefaultStringValue("Add or Edit Job")
+    String jobsEditDisclosurePanelTitle();
 }

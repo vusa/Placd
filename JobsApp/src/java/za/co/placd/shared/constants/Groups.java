@@ -1,4 +1,4 @@
-package za.co.placd.server.model;
+package za.co.placd.shared.constants;
 
 /**
  *
@@ -7,6 +7,6 @@ package za.co.placd.server.model;
 public enum Groups {
     ROLE_ADMIN,
     ROLE_USER,
-    RECRUITER,
+    ROLE_RECRUITER,
     APPLICANT
 }

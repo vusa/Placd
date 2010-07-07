@@ -9,6 +9,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
@@ -19,6 +22,7 @@ import javax.persistence.Temporal;
  */
 @Entity
 @Table(name="jobs")
+@NamedQueries({@NamedQuery(name="Jobs.byPostedById", query="SELECT j FROM Jobs j WHERE j.postedBy.id = :postedById")})
 public class Jobs implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,6 +46,8 @@ public class Jobs implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     @Column(name="date_closing")
     private Date dateClosing;
+    @ManyToOne
+    private AppUsers postedBy;
 
     public Jobs() {
     }
@@ -132,5 +138,19 @@ public class Jobs implements Serializable {
     @Override
     public String toString() {
         return "za.co.placd.server.model.Jobs[id=" + id + "]";
+    }
+
+    /**
+     * @return the appUser
+     */
+    public AppUsers getPostedBy() {
+        return postedBy;
+    }
+
+    /**
+     * @param appUser the appUser to set
+     */
+    public void setPostedBy(AppUsers appUser) {
+        this.postedBy = appUser;
     }
 }

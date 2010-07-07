@@ -1,5 +1,6 @@
 package za.co.placd.server.model;
 
+import za.co.placd.shared.constants.Groups;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
