@@ -2,8 +2,6 @@ package za.co.placd.server.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -94,7 +92,7 @@ public class AuthServiceImpl extends JpaDAO<Long, AppUsers> implements AuthServi
             dto.setDob(user.getDob());
             dto.setEmail(dto.getEmail());
             dto.setId(user.getId());
-            dto.setLastLogin(new Date());
+            dto.setLastLogin(user.getLastLogin());
             dto.setLogin(username);
         }
         return dto;

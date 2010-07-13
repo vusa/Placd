@@ -18,12 +18,10 @@
     <task:executor id="myExecutor" pool-size="5" />
     <task:scheduler id="myScheduler" pool-size="10" />
     <tx:annotation-driven />
-    <bean class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean"
-		id="entityManagerFactory">
+    <bean class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean" id="entityManagerFactory">
         <property name="persistenceUnitName" value="JobsAppPU" />
     </bean>
-    <bean class="org.springframework.orm.jpa.JpaTransactionManager"
-		id="transactionManager">
+    <bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory" />
     </bean>
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />

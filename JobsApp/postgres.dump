@@ -1,0 +1,845 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Started on 2010-07-08 20:37:29 SAST
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = off;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET escape_string_warning = off;
+
+--
+-- TOC entry 1893 (class 1262 OID 16384)
+-- Name: jobsapp; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE jobsapp WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8';
+
+
+ALTER DATABASE jobsapp OWNER TO postgres;
+
+\connect jobsapp
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = off;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET escape_string_warning = off;
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 1534 (class 1259 OID 16406)
+-- Dependencies: 3
+-- Name: app_users; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE app_users (
+    id bigint NOT NULL,
+    active boolean NOT NULL,
+    auth_type character varying(255),
+    dob timestamp without time zone,
+    email character varying(255),
+    lastlogin timestamp without time zone,
+    login character varying(255),
+    password character varying(255)
+);
+
+
+ALTER TABLE public.app_users OWNER TO postgres;
+
+--
+-- TOC entry 1535 (class 1259 OID 16416)
+-- Dependencies: 3
+-- Name: applicants; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE applicants (
+    appuser integer NOT NULL,
+    cvpath character varying(255),
+    expectedminimunsalary integer NOT NULL,
+    lastupdate timestamp without time zone,
+    name character varying(255),
+    showcontactdetails boolean NOT NULL,
+    summary character varying(255),
+    surname character varying(255),
+    tags character varying(255)
+);
+
+
+ALTER TABLE public.applicants OWNER TO postgres;
+
+--
+-- TOC entry 1536 (class 1259 OID 16424)
+-- Dependencies: 3
+-- Name: company; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE company (
+    id bigint NOT NULL,
+    contactemail character varying(255),
+    contactphone character varying(255),
+    logo character varying(255),
+    name character varying(255),
+    maintener_appuser bigint
+);
+
+
+ALTER TABLE public.company OWNER TO postgres;
+
+--
+-- TOC entry 1537 (class 1259 OID 16432)
+-- Dependencies: 3
+-- Name: company_images; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE company_images (
+    id bigint NOT NULL,
+    filepath character varying(255),
+    company_id bigint
+);
+
+
+ALTER TABLE public.company_images OWNER TO postgres;
+
+--
+-- TOC entry 1538 (class 1259 OID 16437)
+-- Dependencies: 3
+-- Name: contact_details; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE contact_details (
+    appuser bigint NOT NULL,
+    cellphone character varying(255),
+    city character varying(255),
+    country character varying(255),
+    email character varying(255),
+    homephone character varying(255),
+    workphone character varying(255)
+);
+
+
+ALTER TABLE public.contact_details OWNER TO postgres;
+
+--
+-- TOC entry 1539 (class 1259 OID 16445)
+-- Dependencies: 3
+-- Name: experience; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE experience (
+    id bigint NOT NULL,
+    dateend date,
+    datestart date,
+    text character varying(255),
+    applicant_appuser integer
+);
+
+
+ALTER TABLE public.experience OWNER TO postgres;
+
+--
+-- TOC entry 1548 (class 1259 OID 16558)
+-- Dependencies: 3
+-- Name: group_permissions; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE group_permissions (
+    id bigint NOT NULL,
+    permission character varying(255),
+    usergroup character varying(255)
+);
+
+
+ALTER TABLE public.group_permissions OWNER TO postgres;
+
+--
+-- TOC entry 1533 (class 1259 OID 16391)
+-- Dependencies: 3
+-- Name: id_gen; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE id_gen (
+    id_name character varying(255) NOT NULL,
+    id_val real NOT NULL
+);
+
+
+ALTER TABLE public.id_gen OWNER TO postgres;
+
+--
+-- TOC entry 1532 (class 1259 OID 16385)
+-- Dependencies: 3
+-- Name: jobs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE jobs (
+    id bigint NOT NULL,
+    date_posted timestamp without time zone,
+    title character varying(255),
+    summary character varying(255),
+    description character varying(2000),
+    pay_rate integer,
+    pay_period character varying(50),
+    date_closing timestamp without time zone,
+    postedby_id bigint
+);
+
+
+ALTER TABLE public.jobs OWNER TO postgres;
+
+--
+-- TOC entry 1540 (class 1259 OID 16450)
+-- Dependencies: 3
+-- Name: jobs_images; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE jobs_images (
+    id bigint NOT NULL,
+    filepath character varying(255),
+    job_id bigint
+);
+
+
+ALTER TABLE public.jobs_images OWNER TO postgres;
+
+--
+-- TOC entry 1541 (class 1259 OID 16455)
+-- Dependencies: 3
+-- Name: key_skills; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE key_skills (
+    id bigint NOT NULL,
+    proficiency integer,
+    text character varying(255),
+    applicant_appuser integer
+);
+
+
+ALTER TABLE public.key_skills OWNER TO postgres;
+
+--
+-- TOC entry 1542 (class 1259 OID 16460)
+-- Dependencies: 3
+-- Name: messages; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE messages (
+    id bigint NOT NULL,
+    inreplyto bigint,
+    message character varying(255),
+    opened boolean NOT NULL,
+    subject character varying(255),
+    timesent timestamp without time zone,
+    fromuser_id bigint,
+    touser_id bigint
+);
+
+
+ALTER TABLE public.messages OWNER TO postgres;
+
+--
+-- TOC entry 1543 (class 1259 OID 16468)
+-- Dependencies: 3
+-- Name: qualifications; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE qualifications (
+    id bigint NOT NULL,
+    rank integer NOT NULL,
+    text character varying(255),
+    applicant_appuser integer
+);
+
+
+ALTER TABLE public.qualifications OWNER TO postgres;
+
+--
+-- TOC entry 1544 (class 1259 OID 16473)
+-- Dependencies: 3
+-- Name: recruiters; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE recruiters (
+    appuser bigint NOT NULL,
+    name character varying(255),
+    surname character varying(255),
+    company_id bigint
+);
+
+
+ALTER TABLE public.recruiters OWNER TO postgres;
+
+--
+-- TOC entry 1545 (class 1259 OID 16481)
+-- Dependencies: 3
+-- Name: referees; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE referees (
+    id bigint NOT NULL,
+    cell character varying(255),
+    company character varying(255),
+    email character varying(255),
+    name character varying(255),
+    phone character varying(255),
+    "position" character varying(255),
+    text character varying(255),
+    applicant_appuser integer
+);
+
+
+ALTER TABLE public.referees OWNER TO postgres;
+
+--
+-- TOC entry 1546 (class 1259 OID 16489)
+-- Dependencies: 3
+-- Name: user_groups; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE user_groups (
+    id bigint NOT NULL,
+    usergroup character varying(255),
+    appuser_login character varying(255)
+);
+
+
+ALTER TABLE public.user_groups OWNER TO postgres;
+
+--
+-- TOC entry 1547 (class 1259 OID 16497)
+-- Dependencies: 3
+-- Name: user_images; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE user_images (
+    id bigint NOT NULL,
+    appuser integer,
+    filepath character varying(255)
+);
+
+
+ALTER TABLE public.user_images OWNER TO postgres;
+
+--
+-- TOC entry 1876 (class 0 OID 16406)
+-- Dependencies: 1534
+-- Data for Name: app_users; Type: TABLE DATA; Schema: public; Owner: postgres
+-- 
+-- passwords
+-- thandi -> pass
+-- sipho  -> secret
+-- bongi  -> pass
+
+COPY app_users (id, active, auth_type, dob, email, lastlogin, login, password) FROM stdin;
+1	t	LOCAL	\N	thandi	\N	thandi	1a1dc91c907325c69271ddf0c944bc72
+2	t	LOCAL	\N	sipho	\N	sipho	5ebe2294ecd0e0f08eab7690d2a6ee69
+3	t	LOCAL	\N	bongi	\N	bongi	1a1dc91c907325c69271ddf0c944bc72
+\.
+
+
+--
+-- TOC entry 1877 (class 0 OID 16416)
+-- Dependencies: 1535
+-- Data for Name: applicants; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY applicants (appuser, cvpath, expectedminimunsalary, lastupdate, name, showcontactdetails, summary, surname, tags) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1878 (class 0 OID 16424)
+-- Dependencies: 1536
+-- Data for Name: company; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY company (id, contactemail, contactphone, logo, name, maintener_appuser) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1879 (class 0 OID 16432)
+-- Dependencies: 1537
+-- Data for Name: company_images; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY company_images (id, filepath, company_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1880 (class 0 OID 16437)
+-- Dependencies: 1538
+-- Data for Name: contact_details; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY contact_details (appuser, cellphone, city, country, email, homephone, workphone) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1881 (class 0 OID 16445)
+-- Dependencies: 1539
+-- Data for Name: experience; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY experience (id, dateend, datestart, text, applicant_appuser) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1890 (class 0 OID 16558)
+-- Dependencies: 1548
+-- Data for Name: group_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY group_permissions (id, permission, usergroup) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1875 (class 0 OID 16391)
+-- Dependencies: 1533
+-- Data for Name: id_gen; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY id_gen (id_name, id_val) FROM stdin;
+jobs	13
+\.
+
+
+--
+-- TOC entry 1874 (class 0 OID 16385)
+-- Dependencies: 1532
+-- Data for Name: jobs; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY jobs (id, date_posted, title, summary, description, pay_rate, pay_period, date_closing, postedby_id) FROM stdin;
+30	2010-06-14 00:00:00	Marketing Person	Junior Rep to work in Marketing department	Junior Rep to work in Marketing department Junior Rep to work in Marketing department Junior Rep to work in Marketing department Junior Rep to work in Marketing department Junior Rep to work in Marketing department	200	HOURLY	2010-07-06 00:00:00	\N
+35	2010-06-14 00:00:00	Job Position Here	Some summary here	some description here	1200	MONTHLY	2010-07-05 00:00:00	\N
+40	2010-06-15 00:00:00	A good Position Here	Some good teaser summary here	job some description here	1200	MONTHLY	2010-06-22 00:00:00	\N
+21	2010-06-11 00:00:00	Senior Web Developer	Java Developer with over 5yrs J2EE and databases experience.	play a lot and have fun some more!!!	340	HOURLY	2010-06-16 00:00:00	\N
+15	2010-06-11 00:00:00	Position here	my summary here	full text pasted here	5000	HOURLY	2010-06-15 00:00:00	\N
+50	2010-06-16 00:00:00	Position 50	a summary edit button??	a full description of position 50 - edit button on top?	300000	HOURLY	2010-06-25 00:00:00	\N
+45	2010-06-15 00:00:00	My position1	A summary of the position	To use Constants, begin by defining an interface that extends it. Each interface method is referred to as a constant accessor, and its corresponding localized value is loaded based on the key for that method. The default key is simply the unqualified name of the method, but can be specified directly with an @Key annotation or a different generation method using @GenerateKeys. Also, the default value can be specified in an annotation rather than a default properties file (and some key generators may require the value to be given in the source file via annotations)	230	HOURLY	2010-06-26 00:00:00	\N
+17	2010-06-11 00:00:00	An ok Position here	yet another my summary here	some more full text pasted here	50	HOURLY	2010-06-30 00:00:00	\N
+25	2010-06-11 00:00:00	Bus Driver	Senior bus driver for school in Sandton	big description here for job including contacts for now...	120	HOURLY	2010-07-06 00:00:00	\N
+16	2010-06-11 00:00:00	Position 16	yet another my summary here	some more full text pasted here this job here	55	HOURLY	\N	\N
+20	2010-06-11 00:00:00	A marketing job	a very good job	play a lot and have fun	100	HOURLY	2010-06-16 00:00:00	\N
+55	2010-07-06 00:00:00	Bongi posted position	this job was posted by Bongi so can only be edited by Bongi	this job was posted by Bongi so can only be edited by Bongi this job was posted by Bongi so can only be edited by Bongi	12000	MONTHLY	2010-07-22 00:00:00	3
+60	2010-07-07 00:00:00	Another Bongi Job	This job is editable by Bongie	Bongi posted this job so an Admin and Bongi can edit it. All users can view it.	180	HOURLY	2010-07-15 00:00:00	3
+\.
+
+
+--
+-- TOC entry 1882 (class 0 OID 16450)
+-- Dependencies: 1540
+-- Data for Name: jobs_images; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY jobs_images (id, filepath, job_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1883 (class 0 OID 16455)
+-- Dependencies: 1541
+-- Data for Name: key_skills; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY key_skills (id, proficiency, text, applicant_appuser) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1884 (class 0 OID 16460)
+-- Dependencies: 1542
+-- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY messages (id, inreplyto, message, opened, subject, timesent, fromuser_id, touser_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1885 (class 0 OID 16468)
+-- Dependencies: 1543
+-- Data for Name: qualifications; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY qualifications (id, rank, text, applicant_appuser) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1886 (class 0 OID 16473)
+-- Dependencies: 1544
+-- Data for Name: recruiters; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY recruiters (appuser, name, surname, company_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1887 (class 0 OID 16481)
+-- Dependencies: 1545
+-- Data for Name: referees; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY referees (id, cell, company, email, name, phone, "position", text, applicant_appuser) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1888 (class 0 OID 16489)
+-- Dependencies: 1546
+-- Data for Name: user_groups; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY user_groups (id, usergroup, appuser_login) FROM stdin;
+1	ROLE_ADMIN	thandi
+2	ROLE_ADMIN	sipho
+3	ROLE_USER	bongi
+4	ROLE_RECRUITER	bongi
+\.
+
+
+--
+-- TOC entry 1889 (class 0 OID 16497)
+-- Dependencies: 1547
+-- Data for Name: user_images; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY user_images (id, appuser, filepath) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1831 (class 2606 OID 16415)
+-- Dependencies: 1534 1534
+-- Name: app_users_login_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY app_users
+    ADD CONSTRAINT app_users_login_key UNIQUE (login);
+
+
+--
+-- TOC entry 1833 (class 2606 OID 16413)
+-- Dependencies: 1534 1534
+-- Name: app_users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY app_users
+    ADD CONSTRAINT app_users_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1835 (class 2606 OID 16423)
+-- Dependencies: 1535 1535
+-- Name: applicants_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY applicants
+    ADD CONSTRAINT applicants_pkey PRIMARY KEY (appuser);
+
+
+--
+-- TOC entry 1839 (class 2606 OID 16436)
+-- Dependencies: 1537 1537
+-- Name: company_images_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY company_images
+    ADD CONSTRAINT company_images_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1837 (class 2606 OID 16431)
+-- Dependencies: 1536 1536
+-- Name: company_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY company
+    ADD CONSTRAINT company_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1841 (class 2606 OID 16444)
+-- Dependencies: 1538 1538
+-- Name: contact_details_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY contact_details
+    ADD CONSTRAINT contact_details_pkey PRIMARY KEY (appuser);
+
+
+--
+-- TOC entry 1843 (class 2606 OID 16449)
+-- Dependencies: 1539 1539
+-- Name: experience_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY experience
+    ADD CONSTRAINT experience_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1861 (class 2606 OID 16565)
+-- Dependencies: 1548 1548
+-- Name: group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY group_permissions
+    ADD CONSTRAINT group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1829 (class 2606 OID 16395)
+-- Dependencies: 1533 1533
+-- Name: id_gen_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY id_gen
+    ADD CONSTRAINT id_gen_pkey PRIMARY KEY (id_name);
+
+
+--
+-- TOC entry 1845 (class 2606 OID 16454)
+-- Dependencies: 1540 1540
+-- Name: jobs_images_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY jobs_images
+    ADD CONSTRAINT jobs_images_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1827 (class 2606 OID 16397)
+-- Dependencies: 1532 1532
+-- Name: jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY jobs
+    ADD CONSTRAINT jobs_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1847 (class 2606 OID 16459)
+-- Dependencies: 1541 1541
+-- Name: key_skills_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY key_skills
+    ADD CONSTRAINT key_skills_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1849 (class 2606 OID 16467)
+-- Dependencies: 1542 1542
+-- Name: messages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY messages
+    ADD CONSTRAINT messages_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1851 (class 2606 OID 16472)
+-- Dependencies: 1543 1543
+-- Name: qualifications_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY qualifications
+    ADD CONSTRAINT qualifications_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1853 (class 2606 OID 16480)
+-- Dependencies: 1544 1544
+-- Name: recruiters_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY recruiters
+    ADD CONSTRAINT recruiters_pkey PRIMARY KEY (appuser);
+
+
+--
+-- TOC entry 1855 (class 2606 OID 16488)
+-- Dependencies: 1545 1545
+-- Name: referees_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY referees
+    ADD CONSTRAINT referees_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1857 (class 2606 OID 16496)
+-- Dependencies: 1546 1546
+-- Name: user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY user_groups
+    ADD CONSTRAINT user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1859 (class 2606 OID 16501)
+-- Dependencies: 1547 1547
+-- Name: user_images_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY user_images
+    ADD CONSTRAINT user_images_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1867 (class 2606 OID 16522)
+-- Dependencies: 1541 1535 1834
+-- Name: fk1ee2c622e8905d2d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY key_skills
+    ADD CONSTRAINT fk1ee2c622e8905d2d FOREIGN KEY (applicant_appuser) REFERENCES applicants(appuser);
+
+
+--
+-- TOC entry 1862 (class 2606 OID 24752)
+-- Dependencies: 1534 1532 1832
+-- Name: fk31dc56260006c2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY jobs
+    ADD CONSTRAINT fk31dc56260006c2 FOREIGN KEY (postedby_id) REFERENCES app_users(id);
+
+
+--
+-- TOC entry 1863 (class 2606 OID 16502)
+-- Dependencies: 1852 1544 1536
+-- Name: fk38a73c7dccf74e53; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY company
+    ADD CONSTRAINT fk38a73c7dccf74e53 FOREIGN KEY (maintener_appuser) REFERENCES recruiters(appuser);
+
+
+--
+-- TOC entry 1866 (class 2606 OID 16517)
+-- Dependencies: 1532 1540 1826
+-- Name: fk59ae36819d194540; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY jobs_images
+    ADD CONSTRAINT fk59ae36819d194540 FOREIGN KEY (job_id) REFERENCES jobs(id);
+
+
+--
+-- TOC entry 1870 (class 2606 OID 16537)
+-- Dependencies: 1543 1535 1834
+-- Name: fk71752064e8905d2d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY qualifications
+    ADD CONSTRAINT fk71752064e8905d2d FOREIGN KEY (applicant_appuser) REFERENCES applicants(appuser);
+
+
+--
+-- TOC entry 1871 (class 2606 OID 16542)
+-- Dependencies: 1836 1544 1536
+-- Name: fkcff3d168c45e256d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY recruiters
+    ADD CONSTRAINT fkcff3d168c45e256d FOREIGN KEY (company_id) REFERENCES company(id);
+
+
+--
+-- TOC entry 1872 (class 2606 OID 16547)
+-- Dependencies: 1834 1535 1545
+-- Name: fkd4ee4b53e8905d2d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY referees
+    ADD CONSTRAINT fkd4ee4b53e8905d2d FOREIGN KEY (applicant_appuser) REFERENCES applicants(appuser);
+
+
+--
+-- TOC entry 1873 (class 2606 OID 16552)
+-- Dependencies: 1830 1534 1546
+-- Name: fke27720c8a2d708ca; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY user_groups
+    ADD CONSTRAINT fke27720c8a2d708ca FOREIGN KEY (appuser_login) REFERENCES app_users(login);
+
+
+--
+-- TOC entry 1868 (class 2606 OID 16527)
+-- Dependencies: 1534 1832 1542
+-- Name: fke475014c7f5cb928; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY messages
+    ADD CONSTRAINT fke475014c7f5cb928 FOREIGN KEY (touser_id) REFERENCES app_users(id);
+
+
+--
+-- TOC entry 1869 (class 2606 OID 16532)
+-- Dependencies: 1832 1542 1534
+-- Name: fke475014ce617cd19; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY messages
+    ADD CONSTRAINT fke475014ce617cd19 FOREIGN KEY (fromuser_id) REFERENCES app_users(id);
+
+
+--
+-- TOC entry 1864 (class 2606 OID 16507)
+-- Dependencies: 1836 1537 1536
+-- Name: fke7baac7ac45e256d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY company_images
+    ADD CONSTRAINT fke7baac7ac45e256d FOREIGN KEY (company_id) REFERENCES company(id);
+
+
+--
+-- TOC entry 1865 (class 2606 OID 16512)
+-- Dependencies: 1834 1539 1535
+-- Name: fkfae6596ae8905d2d; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY experience
+    ADD CONSTRAINT fkfae6596ae8905d2d FOREIGN KEY (applicant_appuser) REFERENCES applicants(appuser);
+
+
+--
+-- TOC entry 1895 (class 0 OID 0)
+-- Dependencies: 3
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2010-07-08 20:37:29 SAST
+
+--
+-- PostgreSQL database dump complete
+--
+

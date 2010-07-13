@@ -105,6 +105,12 @@ public class JobViews extends AbstractWidgetsMaker {
         final Button retrieveButton = new Button("Retrieve");
         retrieveButton.addStyleName("sendButton");
         final CheckBox showRecruiterOnlyJobsChk = new CheckBox("Only show jobs I posted");
+        showRecruiterOnlyJobsChk.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+            public void onValueChange(ValueChangeEvent<Boolean> vce) {
+                retrieveButton.setEnabled(true);
+            }
+        });
         HorizontalPanel hp = new HorizontalPanel();
         hp.add(new HTML("Listed Jobs"));
         hp.add(retrieveButton);
